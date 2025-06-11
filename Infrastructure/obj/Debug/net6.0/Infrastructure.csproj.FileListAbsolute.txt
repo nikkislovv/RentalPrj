@@ -1,0 +1,15 @@
+F:\Internship\RentCommand\Infrastructure\bin\Debug\net6.0\Infrastructure.deps.json
+F:\Internship\RentCommand\Infrastructure\bin\Debug\net6.0\Infrastructure.dll
+F:\Internship\RentCommand\Infrastructure\bin\Debug\net6.0\Infrastructure.pdb
+F:\Internship\RentCommand\Infrastructure\bin\Debug\net6.0\Domain.dll
+F:\Internship\RentCommand\Infrastructure\bin\Debug\net6.0\Domain.pdb
+F:\Internship\RentCommand\Infrastructure\obj\Debug\net6.0\Infrastructure.csproj.AssemblyReference.cache
+F:\Internship\RentCommand\Infrastructure\obj\Debug\net6.0\Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+F:\Internship\RentCommand\Infrastructure\obj\Debug\net6.0\Infrastructure.AssemblyInfoInputs.cache
+F:\Internship\RentCommand\Infrastructure\obj\Debug\net6.0\Infrastructure.AssemblyInfo.cs
+F:\Internship\RentCommand\Infrastructure\obj\Debug\net6.0\Infrastructure.csproj.CoreCompileInputs.cache
+F:\Internship\RentCommand\Infrastructure\obj\Debug\net6.0\Infrastructure.csproj.CopyComplete
+F:\Internship\RentCommand\Infrastructure\obj\Debug\net6.0\Infrastructure.dll
+F:\Internship\RentCommand\Infrastructure\obj\Debug\net6.0\refint\Infrastructure.dll
+F:\Internship\RentCommand\Infrastructure\obj\Debug\net6.0\Infrastructure.pdb
+F:\Internship\RentCommand\Infrastructure\obj\Debug\net6.0\ref\Infrastructure.dll

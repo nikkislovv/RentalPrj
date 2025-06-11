@@ -1,0 +1,37 @@
+networks:
+  car-rental:
+    driver: bridge
+services:
+  mongo:
+    container_name: mongo
+    image: mongo:latest
+    networks:
+      car-rental: {}
+    ports:
+    - published: 27017
+      target: 27017
+    restart: always
+    volumes:
+    - mongo-volume:/data/db:rw
+  rentcommandapi:
+    build:
+      context: F:\Internship\RentCommand
+      dockerfile: RentCommand/Dockerfile
+    depends_on:
+      mongo:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_URLS: http://+:80
+    image: rentcommandapi
+    networks:
+      car-rental: {}
+    ports:
+    - published: 7000
+      target: 80
+    volumes:
+    - C:\Users\nikit\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
+    - C:\Users\nikit\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+version: '3.4'
+volumes:
+  mongo-volume: {}

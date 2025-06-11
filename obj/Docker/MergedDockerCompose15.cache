@@ -1,0 +1,75 @@
+networks:
+  car-rental:
+    external: true
+    name: car-rental
+services:
+  kafka:
+    container_name: kafka
+    depends_on:
+      zookeeper:
+        condition: service_started
+    environment:
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENERS: PLAINTEXT://:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    image: bitnami/kafka
+    networks:
+      car-rental: {}
+    ports:
+    - published: 9092
+      target: 9092
+    restart: always
+    volumes:
+    - kafka_data:/bitnami:rw
+  mongo:
+    container_name: mongo
+    image: mongo:latest
+    networks:
+      car-rental: {}
+    ports:
+    - published: 27017
+      target: 27017
+    restart: always
+    volumes:
+    - mongo-volume:/data/db:rw
+  rentcommandapi:
+    build:
+      context: F:\Internship\RentCommand
+      dockerfile: RentCommand/Dockerfile
+    depends_on:
+      kafka:
+        condition: service_started
+      mongo:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_URLS: http://+:80
+      KAFKA_TOPIC: RentEvents
+    image: rentcommandapi
+    networks:
+      car-rental: {}
+    ports:
+    - published: 7000
+      target: 80
+    volumes:
+    - C:\Users\nikit\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
+    - C:\Users\nikit\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+  zookeeper:
+    container_name: zookeeper
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: "yes"
+    image: bitnami/zookeeper
+    networks:
+      car-rental: {}
+    ports:
+    - published: 2181
+      target: 2181
+    restart: always
+    volumes:
+    - zookeeper_data:/bitnami:rw
+version: '3.4'
+volumes:
+  kafka_data: {}
+  mongo-volume: {}
+  zookeeper_data: {}

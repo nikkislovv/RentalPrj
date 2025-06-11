@@ -1,0 +1,94 @@
+networks:
+  car-rental:
+    name: car-rental
+services:
+  kafka:
+    container_name: kafka
+    depends_on:
+      zookeeper:
+        condition: service_started
+    environment:
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    image: bitnami/kafka
+    networks:
+      car-rental: {}
+    ports:
+    - published: 9092
+      target: 9092
+    restart: always
+    volumes:
+    - kafka_data:/bitnami:rw
+  mongo:
+    container_name: mongo
+    image: mongo:latest
+    networks:
+      car-rental: {}
+    ports:
+    - published: 27017
+      target: 27017
+    restart: always
+    volumes:
+    - mongo-volume:/data/db:rw
+  rentcommandapi:
+    build:
+      context: F:\Internship\RentCommand
+      dockerfile: RentCommand/Dockerfile
+      labels:
+        com.microsoft.created-by: visual-studio
+        com.microsoft.visual-studio.project-name: RentCommandApi
+      target: base
+    container_name: RentCommandApi
+    depends_on:
+      kafka:
+        condition: service_started
+      mongo:
+        condition: service_started
+    entrypoint: tail -f /dev/null
+    environment:
+      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS: "true"
+      ASPNETCORE_URLS: http://+:80
+      DOTNET_USE_POLLING_FILE_WATCHER: '1'
+      KAFKA_TOPIC: RentEvents
+      NUGET_FALLBACK_PACKAGES: ''
+    image: rentcommandapi:dev
+    labels:
+      com.microsoft.visualstudio.debuggee.arguments: ' --additionalProbingPath /root/.nuget/packages  "/app/bin/Debug/net6.0/RentCommandApi.dll"'
+      com.microsoft.visualstudio.debuggee.killprogram: /bin/sh -c "if PID=$$(pidof
+        dotnet); then kill $$PID; fi"
+      com.microsoft.visualstudio.debuggee.program: dotnet
+      com.microsoft.visualstudio.debuggee.workingdirectory: /app
+    networks:
+      car-rental: {}
+    ports:
+    - published: 7000
+      target: 80
+    tty: true
+    volumes:
+    - F:\Internship\RentCommand\RentCommand:/app:rw
+    - C:\Users\nikit\vsdbg\vs2017u5:/remote_debugger:rw
+    - C:\Users\nikit\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
+    - C:\Users\nikit\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+    - C:\Users\nikit\.nuget\packages:/root/.nuget/packages:ro
+    - F:\Internship\RentCommand:/src:rw
+  zookeeper:
+    container_name: zookeeper
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: "yes"
+    image: bitnami/zookeeper
+    networks:
+      car-rental: {}
+    ports:
+    - published: 2181
+      target: 2181
+    restart: always
+    volumes:
+    - zookeeper_data:/bitnami:rw
+version: '3.4'
+volumes:
+  kafka_data: {}
+  mongo-volume: {}
+  zookeeper_data: {}

@@ -1,0 +1,60 @@
+version: '3.4'
+
+services:
+  rentcommandapi:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_URLS=http://+:80
+      - KAFKA_TOPIC=RentEvents
+    ports:
+      - 7000:80
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    networks:
+      - car-rental
+
+  mongo:
+    ports:
+      - 27017:27017
+    restart: always
+    volumes:
+      - mongo-volume:/data/db
+    networks: 
+      - car-rental
+
+  zookeeper:
+    ports:
+      - 2181:2181
+    restart: always
+    volumes:
+      - zookeeper_data:/bitnami
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - car-rental
+
+  kafka:
+    ports:
+      - 9092:9092
+    restart: always
+    volumes:
+      - kafka_data:/bitnami
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+    networks:
+      - car-rental
+
+networks:
+  car-rental:
+    external:
+       name: car-rental
+
+volumes:
+  mongo-volume:
+  zookeeper_data:
+  kafka_data:
+    
